@@ -1,0 +1,3 @@
+[submodule "ErythrinaCore"]
+    path = npc
+    url = git@github.com:ChrisYzcc/ErythrinaCore.git
