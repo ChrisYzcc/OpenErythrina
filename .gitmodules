@@ -1,3 +1,7 @@
 [submodule "ErythrinaCore"]
     path = npc
     url = git@github.com:ChrisYzcc/ErythrinaCore.git
+
+[submodule "fceux-am"]
+    path = fceux-am
+    url = git@github.com:NJU-ProjectN/fceux-am.git
