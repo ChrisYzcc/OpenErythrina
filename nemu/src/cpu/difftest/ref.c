@@ -34,7 +34,7 @@ __EXPORT void difftest_regcpy(void *dut, bool direction) {
   if (direction == DIFFTEST_TO_DUT){
     for (int i = 0; i < RISCV_GPR_NUM; i++)
       (*(CPU_state *)dut).gpr[i] = cpu.gpr[i];
-    (*(CPU_state *)dut).pc = cpu.pc;
+    (*(CPU_state *)dut).pc = cpu.commit_pc;
   }
   else{
     for (int i = 0; i < RISCV_GPR_NUM; i++)
