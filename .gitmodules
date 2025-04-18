@@ -5,3 +5,7 @@
 [submodule "fceux-am"]
     path = fceux-am
     url = git@github.com:NJU-ProjectN/fceux-am.git
+
+[submodule "rt-thread"]
+    path = rt-thread-am
+    url = git@github.com:ChrisYzcc/rt-thread-am.git
