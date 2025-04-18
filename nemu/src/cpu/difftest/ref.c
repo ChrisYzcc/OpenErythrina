@@ -40,6 +40,7 @@ __EXPORT void difftest_regcpy(void *dut, bool direction) {
     for (int i = 0; i < RISCV_GPR_NUM; i++)
       cpu.gpr[i] = (*(CPU_state *)dut).gpr[i];
     cpu.pc = (*(CPU_state *)dut).pc + 4;    // TODO: Fix?
+    cpu.commit_pc = (*(CPU_state *)dut).pc;
   }
 }
 
