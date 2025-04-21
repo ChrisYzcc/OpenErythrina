@@ -9,3 +9,8 @@
 [submodule "rt-thread"]
     path = rt-thread-am
     url = git@github.com:ChrisYzcc/rt-thread-am.git
+
+[submodule "soc"]
+    path = soc
+    url = git@github.com:ChrisYzcc/ErythrinaSoc.git
+    branch = dev-yzc
