@@ -14,3 +14,7 @@
     path = ErythrinaSoc
     url = git@github.com:ChrisYzcc/ErythrinaSoc.git
     branch = dev-yzc
+
+[submodule "DRAMSim3"]
+    path = DRAMsim3
+    url = https://github.com/OpenXiangShan/DRAMsim3.git
