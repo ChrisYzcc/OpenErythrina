@@ -18,3 +18,7 @@
 [submodule "DRAMSim3"]
     path = DRAMsim3
     url = https://github.com/OpenXiangShan/DRAMsim3.git
+
+[submodule "yosys-sta"]
+    path = yosys-sta
+    url = https://github.com/OSCPU/yosys-sta.git
