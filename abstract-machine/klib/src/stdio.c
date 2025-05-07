@@ -5,7 +5,7 @@
 
 #if !defined(__ISA_NATIVE__) || defined(__NATIVE_USE_KLIB__)
 
-#define BUFLEN 1000
+#define BUFLEN 10000
 
 char pbuf[BUFLEN];
 int printf(const char *fmt, ...) {
