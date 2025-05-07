@@ -1,7 +1,16 @@
 #include <common.h>
-
+void do_syscall(Context *c);
 static Context* do_event(Event e, Context* c) {
   switch (e.event) {
+    case EVENT_YIELD:{
+      Log("Yielding...");
+      break;
+    }
+    case EVENT_SYSCALL:{
+      Log("System call...");
+      do_syscall(c);
+      break;
+    }
     default: panic("Unhandled event ID = %d", e.event);
   }
 
