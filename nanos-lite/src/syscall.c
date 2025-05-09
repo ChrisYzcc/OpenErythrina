@@ -6,6 +6,16 @@
 
 int mm_brk(uintptr_t brk);
 
+void gettimeofday(void *tv) {
+  long *sec_ptr = (long *)tv;
+  
+  // tv_sec
+  sec_ptr[0] = 0;
+
+  // tv_usec
+  sec_ptr[1] = io_read(AM_TIMER_UPTIME).us;
+}
+
 void do_syscall(Context *c) {
   uintptr_t a[4];
   a[0] = c->GPR1;
@@ -45,6 +55,11 @@ void do_syscall(Context *c) {
     }
     case SYS_close:{
       c->GPRx = fs_close(a[1]);
+      break;
+    }
+    case SYS_gettimeofday:{
+      gettimeofday((void *)a[1]);
+      c->GPRx = 0;
       break;
     }
     default: panic("Unhandled syscall ID = %d", a[0]);
