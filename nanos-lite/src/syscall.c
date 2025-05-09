@@ -2,6 +2,9 @@
 #include "am.h"
 #include "debug.h"
 #include "syscall.h"
+
+int mm_brk(uintptr_t brk);
+
 void do_syscall(Context *c) {
   uintptr_t a[4];
   a[0] = c->GPR1;
@@ -31,6 +34,10 @@ void do_syscall(Context *c) {
       } else {
         c->GPRx = -1;
       }
+      break;
+    }
+    case SYS_brk:{
+      c->GPRx = mm_brk(a[1]);
       break;
     }
     default: panic("Unhandled syscall ID = %d", a[0]);
