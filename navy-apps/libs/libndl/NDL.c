@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -17,7 +18,11 @@ uint32_t NDL_GetTicks() {
 }
 
 int NDL_PollEvent(char *buf, int len) {
-  return 0;
+  FILE *fp = fopen("/dev/events", "r+");
+  assert(fp);
+  int rt = fread(buf, 1, len, fp);
+  fclose(fp);
+  return rt;
 }
 
 void NDL_OpenCanvas(int *w, int *h) {
