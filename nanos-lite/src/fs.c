@@ -13,7 +13,7 @@ typedef struct {
   size_t open_offset;
 } Finfo;
 
-enum {FD_STDIN, FD_STDOUT, FD_STDERR, FD_DEV, FD_FB};
+enum {FD_STDIN, FD_STDOUT, FD_STDERR, FD_DEV, FD_DISPLAYINFO, FD_FB};
 
 size_t invalid_read(void *buf, size_t offset, size_t len) {
   panic("should not reach here");
@@ -22,6 +22,8 @@ size_t invalid_read(void *buf, size_t offset, size_t len) {
 
 size_t serial_write(const void *buf, size_t offset, size_t len);
 size_t events_read(void *buf, size_t offset, size_t len);
+size_t dispinfo_read(void *buf, size_t offset, size_t len);
+size_t fb_write(const void *buf, size_t offset, size_t len);
 
 size_t invalid_write(const void *buf, size_t offset, size_t len) {
   panic("should not reach here");
@@ -34,6 +36,8 @@ static Finfo file_table[] __attribute__((used)) = {
   [FD_STDOUT] = {"stdout", 0, 0, invalid_read, serial_write},
   [FD_STDERR] = {"stderr", 0, 0, invalid_read, serial_write},
   [FD_DEV]    = {"/dev/events", 0, 0, events_read, invalid_write},
+  [FD_DISPLAYINFO] = {"/proc/dispinfo", 0, 0, dispinfo_read, invalid_write},
+  [FD_FB]     = {"/dev/fb", 0, 0, invalid_read, fb_write},
 #include "files.h"
 };
 
@@ -68,7 +72,9 @@ size_t fs_write(int fd, const void *buf, size_t len) {
   size_t size = len;
 
   if (f->write != NULL) {
-    f->write(buf, f->disk_offset + f->open_offset, size);
+    size_t wr_len =  f->write(buf, f->disk_offset + f->open_offset, size);
+    f->open_offset += wr_len;
+    return wr_len;
   } else {
     size_t nxt_offset = f->open_offset + len > f->size ? f->size : f->open_offset + len;
     size = nxt_offset - f->open_offset;
@@ -107,4 +113,7 @@ int fs_close(int fd) {
 
 void init_fs() {
   // TODO: initialize the size of /dev/fb
+  int w = io_read(AM_GPU_CONFIG).width;
+  int h = io_read(AM_GPU_CONFIG).height;
+  file_table[FD_FB].size = w * h * sizeof(uint32_t);
 }

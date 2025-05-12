@@ -5,6 +5,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/time.h>
+#include <fcntl.h>
 
 static int evtdev = -1;
 static int fbdev = -1;
@@ -43,9 +44,29 @@ void NDL_OpenCanvas(int *w, int *h) {
     }
     close(fbctl);
   }
+  else {
+    int fd = open("/proc/dispinfo", 0);
+    char buf[64];
+    read(fd, buf, sizeof(buf));
+    close(fd);
+    sscanf(buf, "WIDTH:%d\nHEIGHT:%d", w, h);
+  }
 }
 
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
+  FILE *fp = fopen("/dev/fb", "w+");
+  int fb_fd = fileno(fp);
+  int canvas_w, canvas_h;
+  NDL_OpenCanvas(&canvas_w, &canvas_w);
+
+  fseek(fp, y * canvas_w + x, SEEK_SET);
+  for (int i = 0; i < h; i++) {
+    for (int j = 0; j < w; j++) {
+      int index = i * canvas_w + j;
+      write(fb_fd, &pixels[index], sizeof(uint32_t));
+    }
+  }
+  fclose(fp);
 }
 
 void NDL_OpenAudio(int freq, int channels, int samples) {
