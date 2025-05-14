@@ -65,6 +65,7 @@ void NDL_OpenCanvas(int *w, int *h) {
     close(fd);
     int screen_w, screen_h;
     sscanf(buf, "WIDTH:%d\nHEIGHT:%d", &screen_w, &screen_h);
+    printf("screen size: %d %d\n", screen_w, screen_h);
     assert(*w <= screen_w && *h <= screen_h);
     canvas_w = *w;
     canvas_h = *h;
@@ -79,14 +80,9 @@ void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
   get_screen_size(&screen_w, &screen_h);
 
   assert(y + h <= canvas_h && x + w <= canvas_w);
-
   for (int i = y; i < y + h; i++) {
     fseek(fp, i * screen_w, SEEK_SET);
-    for (int j = x; j < x + w; j++) {
-
-      int index = i * canvas_w  + j;
-      write(fb_fd, &pixels[index], sizeof(uint32_t));
-    }
+    write(fb_fd, pixels + i * canvas_w + x, w * sizeof(uint32_t));
   }
   fclose(fp);
 }

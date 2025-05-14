@@ -69,7 +69,7 @@ static void clear_display(void) {
 
 int main(int argc, char *argv[], char *envp[]) {
   SDL_Init(0);
-  screen = SDL_SetVideoMode(0, 0, 32, SDL_HWSURFACE);
+  screen = SDL_SetVideoMode(400, 300, 32, SDL_HWSURFACE);
 
   font = new BDF_Font(font_fname);
   logo_sf = SDL_LoadBMP("/share/pictures/projectn.bmp");
@@ -99,6 +99,7 @@ int main(int argc, char *argv[], char *envp[]) {
       case SDLK_LEFT: prev(); break;
       case SDLK_RIGHT: next(); break;
     }
+    printf("e.key.keysym.sym = %d\n", e.key.keysym.sym);
 
     if (i != -1 && i <= i_max) {
       i += page * 10;

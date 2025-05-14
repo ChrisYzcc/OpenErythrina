@@ -44,11 +44,25 @@ size_t dispinfo_read(void *buf, size_t offset, size_t len) {
 size_t fb_write(const void *buf, size_t offset, size_t len) {
   int w = io_read(AM_GPU_CONFIG).width;
   int h = io_read(AM_GPU_CONFIG).height;
-  for (size_t i = offset; i < w * h && i < offset + len / 4; i++) {
-    int x = i % w;
-    int y = i / w;
-    uint32_t *pixel = (uint32_t *)buf + (i - offset);
-    io_write(AM_GPU_FBDRAW, x, y, pixel, 1, 1, false);
+
+  int start_x = offset % w;
+  int start_y = offset / w;
+
+  int end_x = (offset + len / 4 >= w * h) ? w - 1 : (offset + len / 4) % w;
+  int end_y = (offset + len / 4 >= w * h) ? h - 1 : (offset + len / 4) / w;
+
+  int idx = 0;
+  for (int y = start_y; y <= end_y; y++) {
+    int wr_len;
+    if (y == start_y) {
+      wr_len = w - start_x;
+    } else if (y == end_y) {
+      wr_len = end_x + 1;
+    } else {
+      wr_len = w;
+    }
+    io_write(AM_GPU_FBDRAW, start_x, y, (void *)((uint32_t *)buf + idx), wr_len, 1, false);
+    idx += wr_len;
   }
   io_write(AM_GPU_FBDRAW, 0, 0, NULL, 0, 0, true);
   

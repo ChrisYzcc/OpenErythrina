@@ -1,4 +1,5 @@
 #include <NDL.h>
+#include <stdio.h>
 #include <sdl-video.h>
 #include <assert.h>
 #include <string.h>
@@ -7,12 +8,79 @@
 void SDL_BlitSurface(SDL_Surface *src, SDL_Rect *srcrect, SDL_Surface *dst, SDL_Rect *dstrect) {
   assert(dst && src);
   assert(dst->format->BitsPerPixel == src->format->BitsPerPixel);
+  int src_x, src_y, src_w, src_h;
+  int dst_x, dst_y, dst_w, dst_h;
+
+  if (srcrect == NULL) {
+    src_x = 0;
+    src_y = 0;
+    src_w = src->w;
+    src_h = src->h;
+  } else {
+    src_x = srcrect->x;
+    src_y = srcrect->y;
+    src_w = srcrect->w;
+    src_h = srcrect->h;
+  }
+
+  if (dstrect == NULL) {
+    dst_x = 0;
+    dst_y = 0;
+    dst_w = src_w;
+    dst_h = src_h;
+  } else {
+    dst_x = dstrect->x;
+    dst_y = dstrect->y;
+    dst_w = dstrect->w;
+    dst_h = dstrect->h;
+  }
+
+  assert(src_x >= 0 && src_y >= 0 && src_w >= 0 && src_h >= 0);
+  assert(dst_x >= 0 && dst_y >= 0 && dst_w >= 0 && dst_h >= 0);
+  assert(src_x + src_w <= src->w);
+  assert(src_y + src_h <= src->h);
+  assert(dst_x + dst_w <= dst->w);
+  assert(dst_y + dst_h <= dst->h);
+
+  for (int i = 0; i < src_h; i ++) {
+    uint32_t *src_pixels = (uint32_t *)src->pixels + (src_y + i) * src->w + src_x;
+    uint32_t *dst_pixels = (uint32_t *)dst->pixels + (dst_y + i) * dst->w + dst_x;
+    memcpy(dst_pixels, src_pixels, src_w * sizeof(uint32_t));
+  }
 }
 
 void SDL_FillRect(SDL_Surface *dst, SDL_Rect *dstrect, uint32_t color) {
+  assert(dst);
+  int x, y, w, h;
+  if (dstrect == NULL) {
+    x = 0;
+    y = 0;
+    w = dst->w;
+    h = dst->h;
+  } else {
+    x = dstrect->x;
+    y = dstrect->y;
+    w = dstrect->w;
+    h = dstrect->h;
+  }
+  for (int i = 0; i < h; i ++) {
+    uint32_t *pixels = (uint32_t *)dst->pixels + (y + i) * dst->w + x;
+    for (int j = 0; j < w; j ++) {
+      pixels[j] = color;
+    }
+  }
 }
 
 void SDL_UpdateRect(SDL_Surface *s, int x, int y, int w, int h) {
+  uint32_t *pixels = (uint32_t *)s->pixels + y * s->w + x;
+
+  if (w == 0) {
+    w = s->w - x;
+  }
+  if (h == 0) {
+    h = s->h - y;
+  }
+  NDL_DrawRect(pixels, x, y, w, h);
 }
 
 // APIs below are already implemented.
