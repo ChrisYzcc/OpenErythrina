@@ -9,4 +9,6 @@ int SDL_RemoveTimer(SDL_TimerID id);
 uint32_t SDL_GetTicks();
 void SDL_Delay(uint32_t ms);
 
+extern uint32_t start_ticks;
+
 #endif
