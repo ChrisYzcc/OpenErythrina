@@ -26,6 +26,20 @@ int NDL_PollEvent(char *buf, int len) {
   return rt;
 }
 
+int canvas_w, canvas_h;
+
+void get_screen_size(int *w, int *h) {
+  if (!getenv("NWM_APP")) {
+    int fd = open("/proc/dispinfo", 0);
+    char buf[64];
+    read(fd, buf, sizeof(buf));
+    close(fd);
+    sscanf(buf, "WIDTH:%d\nHEIGHT:%d", w, h);
+  } else {
+    return;
+  }
+}
+
 void NDL_OpenCanvas(int *w, int *h) {
   if (getenv("NWM_APP")) {
     int fbctl = 4;
@@ -49,20 +63,28 @@ void NDL_OpenCanvas(int *w, int *h) {
     char buf[64];
     read(fd, buf, sizeof(buf));
     close(fd);
-    sscanf(buf, "WIDTH:%d\nHEIGHT:%d", w, h);
+    int screen_w, screen_h;
+    sscanf(buf, "WIDTH:%d\nHEIGHT:%d", &screen_w, &screen_h);
+    assert(*w <= screen_w && *h <= screen_h);
+    canvas_w = *w;
+    canvas_h = *h;
   }
 }
 
 void NDL_DrawRect(uint32_t *pixels, int x, int y, int w, int h) {
   FILE *fp = fopen("/dev/fb", "w+");
   int fb_fd = fileno(fp);
-  int canvas_w, canvas_h;
-  NDL_OpenCanvas(&canvas_w, &canvas_w);
 
-  fseek(fp, y * canvas_w + x, SEEK_SET);
-  for (int i = 0; i < h; i++) {
-    for (int j = 0; j < w; j++) {
-      int index = i * canvas_w + j;
+  int screen_h, screen_w;
+  get_screen_size(&screen_w, &screen_h);
+
+  assert(y + h <= canvas_h && x + w <= canvas_w);
+
+  for (int i = y; i < y + h; i++) {
+    fseek(fp, i * screen_w, SEEK_SET);
+    for (int j = x; j < x + w; j++) {
+
+      int index = i * canvas_w  + j;
       write(fb_fd, &pixels[index], sizeof(uint32_t));
     }
   }
