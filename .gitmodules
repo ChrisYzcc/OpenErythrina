@@ -2,6 +2,11 @@
     path = npc
     url = git@github.com:ChrisYzcc/ErythrinaCore.git
 
+[submodule "nemu"]
+    path = nemu
+    url = git@github.com:ChrisYzcc/nemu.git
+    branch = dev-yzc
+
 [submodule "fceux-am"]
     path = fceux-am
     url = git@github.com:NJU-ProjectN/fceux-am.git
