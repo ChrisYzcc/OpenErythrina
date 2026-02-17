@@ -1,0 +1,33 @@
+[submodule "ErythrinaCore"]
+    path = npc
+    url = git@github.com:ChrisYzcc/ErythrinaCore.git
+
+[submodule "nemu"]
+    path = nemu
+    url = git@github.com:ChrisYzcc/nemu.git
+    branch = dev-yzc
+
+[submodule "fceux-am"]
+    path = fceux-am
+    url = git@github.com:NJU-ProjectN/fceux-am.git
+
+[submodule "rt-thread"]
+    path = rt-thread-am
+    url = git@github.com:ChrisYzcc/rt-thread-am.git
+
+[submodule "ErythrinaSoc"]
+    path = ErythrinaSoc
+    url = git@github.com:ChrisYzcc/ErythrinaSoc.git
+    branch = dev-yzc
+
+[submodule "DRAMSim3"]
+    path = DRAMsim3
+    url = https://github.com/OpenXiangShan/DRAMsim3.git
+
+[submodule "yosys-sta"]
+    path = yosys-sta
+    url = https://github.com/OSCPU/yosys-sta.git
+
+[submodule "riscv-arch-test-am"]
+	path = riscv-arch-test-am
+	url = https://github.com/NJU-ProjectN/riscv-arch-test-am.git
